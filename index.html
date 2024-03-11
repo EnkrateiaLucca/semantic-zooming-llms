@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otovo - Solar Panel Marketplace</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        /* Basic styles here */
+    </style>
+</head>
+<body>
+
+    <!-- Slider -->
+    <div id="slider"></div>
+    
+    <!-- Content Container -->
+    <div id="content"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('pdf_contents.json')
+                .then(response => response.json())
+                .then(data => {
+                    initializeSlider(Object.keys(data));
+                    updateContent(data[Object.keys(data)[0]]); // Initialize with the first item's content
+                })
+                .catch(error => console.log('Error loading JSON:', error));
+        });
+
+        function initializeSlider(keys) {
+            $("#slider").slider({
+                min: 0,
+                max: keys.length - 1,
+                slide: function(event, ui) {
+                    // Fetch the JSON data again and update the content based on the slider's position
+                    fetch('pdf_contents.json')
+                        .then(response => response.json())
+                        .then(data => {
+                            updateContent(data[keys[ui.value]]);
+                        })
+                        .catch(error => console.log('Error loading JSON:', error));
+                }
+            });
+        }
+
+        function updateContent(content) {
+            $('#content').html(content); // Assuming the content is just text. If it's more complex, you'll need to adjust this.
+        }
+    </script>
+</body>
+</html>
